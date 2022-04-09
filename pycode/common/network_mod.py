@@ -16,20 +16,19 @@ class Network(nn.Module):
         self.dropout_rate = dropout_rate
 
         self.rnn_input_dim = 100352 * 2
-        self.rnn_output_dim = 100
-        self.rnn_hidden_num = 1500
-        self.rnn_layer_num = 3
+        self.rnn_hidden_dim = 150
+        self.rnn_layer_num = 2
 
         self.feature_extractor = feature_extractor_mod.resnet50(pretrained_model, norm_layer=norm_layer, bn_eps=1e-5, bn_momentum=0.1, deep_stem=True, stem_width=64)
-        self.rnn = nn.RNN(self.rnn_input_dim, self.rnn_output_dim, self.rnn_hidden_num, self.rnn_layer_num)
+        self.rnn = nn.RNN(input_size = self.rnn_input_dim, hidden_size = self.rnn_hidden_dim, num_layers = self.rnn_layer_num, dropout = self.dropout_rate, batch_first = True)
 
         self.roll_fc = nn.Sequential(
-            nn.Linear( 100, self.dim_fc_out),
+            nn.Linear( self.rnn_hidden_dim, self.dim_fc_out),
             nn.Softmax(dim=1)
         )
 
         self.pitch_fc = nn.Sequential(
-            nn.Linear( 100, self.dim_fc_out),
+            nn.Linear( self.rnn_hidden_dim, self.dim_fc_out),
             nn.Softmax(dim=1)
         )
 
