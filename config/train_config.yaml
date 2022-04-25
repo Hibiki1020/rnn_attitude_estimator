@@ -1,0 +1,35 @@
+save_top_path: "/home/log/rnn_test"
+weights_path: "/weights"
+log_path: "/log"
+graph_path: "/graph"
+
+train:
+  - "/home/strage/flight_airsim_image/sequence1"
+  - "/home/strage/flight_airsim_image/sequence2"
+  - "/home/strage/flight_airsim_image/sequence3"
+  - "/home/strage/flight_airsim_image/sequence4"
+  - "/home/strage/flight_airsim_image/sequence5"
+valid:
+  - "/home/strage/flight_airsim_image/sequence6"
+
+csv_name: "data_list.csv"
+
+pretrained_model: "/home/weights/resnet50-0676ba61.pth"
+
+multiGPU: 1 #1 is ture
+
+hyperparameter:
+  resize: 224
+  mean_element: 0.5
+  std_element: 0.5
+  dim_fc_out: 63 #デフォルトの61次元に加えて角度範囲外を示すインデックスを±で1次元追加
+  deg_threshold: 30
+  batch_size: 256
+  num_epochs: 50
+  optimizer_name: "Adam"
+  lr_resnet: 1e-4
+  lr_roll_fc: 1e-4
+  lr_pitch_fc: 1e-4
+  weight_decay: 0.00
+  alpha: 5e-5
+  timesteps: 8
