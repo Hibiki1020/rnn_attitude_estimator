@@ -1,0 +1,4 @@
+#.pthファイルを無視
+*.pth
+.vscode/
+__pycache__/

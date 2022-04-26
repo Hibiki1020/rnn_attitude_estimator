@@ -10,7 +10,7 @@ from torchvision.transforms.transforms import Resize
 import torch.nn.functional as nn_functional
 
 class DataTransform():
-    def __init__(self, resize, mean, std, original_size):
+    def __init__(self, resize, mean, std):
         self.mean = mean
         self.std = std
         size = (resize, resize)

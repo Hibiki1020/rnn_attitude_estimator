@@ -1,4 +1,5 @@
-import sys
+import sys, codecs
+#sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
 sys.dont_write_bytecode = True
 
 from random import shuffle
@@ -64,18 +65,16 @@ if __name__ == '__main__':
     index_csv_path = CFG["index_csv_path"]
     multiGPU = int(CFG["multiGPU"])
 
-    model = CFG["model"]
     pretrained_model = CFG["pretrained_model"]
 
     train_sequences = CFG["train"]
     valid_sequences = CFG["valid"]
 
     dim_fc_out = int(CFG["hyperparameter"]["dim_fc_out"])
-    deg_threshold = int(CFG["hyperparameter"]["deg_thresold"])
+    deg_threshold = int(CFG["hyperparameter"]["deg_threshold"])
     resize = int(CFG["hyperparameter"]["resize"])
     mean_element = float(CFG["hyperparameter"]["mean_element"])
     std_element = float(CFG["hyperparameter"]["std_element"])
-    original_size = int(CFG["hyperparameter"]["original_size"])
     batch_size = int(CFG["hyperparameter"]["batch_size"])
     num_epochs = int(CFG["hyperparameter"]["num_epochs"])
     optimizer_name = str(CFG["hyperparameter"]["optimizer_name"])
@@ -95,10 +94,25 @@ if __name__ == '__main__':
         transform = data_transform_mod.DataTransform(
             resize,
             mean_element,
-            std_element,
-            original_size
+            std_element
         ),
         phase = "train",
+        index_dict_path = index_csv_path,
+        dim_fc_out = dim_fc_out,
+        timesteps = timesteps,
+        deg_threshold = deg_threshold
+    )
+
+    print("Load Valid Dataeset")
+
+    valid_dataset = dataset_mod.RNNAttitudeEstimatorDataset(
+        data_list = make_datalist_mod.makeMultiDataList(valid_sequences, csv_name),
+        transform = data_transform_mod.DataTransform(
+            resize,
+            mean_element,
+            std_element
+        ),
+        phase = "valid",
         index_dict_path = index_csv_path,
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
