@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as nn_functional
 
 class Network(nn.Module):
-    def __init__(self, model, dim_fc_out, norm_layer, pretrained_model, dropout_rate):
+    def __init__(self, dim_fc_out, norm_layer, pretrained_model, dropout_rate):
         super(Network, self).__init__()
         
         self.dim_fc_out = dim_fc_out

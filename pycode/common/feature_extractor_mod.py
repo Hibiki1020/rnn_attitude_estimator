@@ -171,11 +171,9 @@ def load_model(model, model_file, is_restore=False):
 
 
 def resnet50(pretrained_model=None, **kwargs):
-    resnet_mono = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-    resnet_depth = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
+    resnet_img = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
 
     if pretrained_model is not None:
-        resnet_mono = load_model(resnet_mono, pretrained_model)
-        resnet_depth = load_model(resnet_depth, pretrained_model)
+        resnet_img = load_model(resnet_img, pretrained_model)
 
-    return resnet_mono, resnet_depth
+    return resnet_img
