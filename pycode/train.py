@@ -59,7 +59,10 @@ class Trainer:
             weight_decay,
             alpha,
             timesteps,
-            dropout_rate):
+            dropout_rate,
+            train_dataset,
+            valid_dataset,
+            net):
 
             self.save_top_path = save_top_path
             self.yaml_path = yaml_path
@@ -87,6 +90,48 @@ class Trainer:
             self.alpha = alpha
             self.timesteps = timesteps
             self.dropout_rate = dropout_rate
+
+            self.train_dataset = train_dataset
+            self.valid_dataset = valid_dataset
+            self.net = net
+
+            if self.multiGPU == 0:
+                self.device = torch.device("cuda:0" if torch.cuda.is_available else "cpu")
+            else:
+                self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+            self.setRandomCondition()
+            self.dataloaders_dict = self.getDataloaders(train_dataset, valid_dataset, batch_size)
+
+    def setRandomCondition(self, keep_reproducibility=False, seed=123456789):
+        if keep_reproducibility:
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
+
+    def getDataloaders(self, train_dataset, valid_dataset, batch_size):
+        train_dataloader = torch.utils.data.DataLoader(
+            train_dataset,
+            batch_size = batch_size,
+            shuffle=True,
+            #num_workers = 2,
+            #pin_memory =True
+        )
+
+        valid_dataloader = torch.utils.data.DataLoader(
+            valid_dataset,
+            batch_size = batch_size,
+            shuffle=True,
+            #num_workers = 2,
+            #pin_memory = True
+        )
+
+        dataloaders_dict = {"train":train_dataloader, "valid":valid_dataloader}
+
+        return dataloaders_dict
+
 
 
 
@@ -207,5 +252,8 @@ if __name__ == '__main__':
         weight_decay,
         alpha,
         timesteps,
-        dropout_rate
+        dropout_rate,
+        train_dataset,
+        valid_dataset,
+        net
     )
