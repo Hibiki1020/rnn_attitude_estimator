@@ -7,6 +7,7 @@ ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_P
 ########## non-interactive ##########
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
 
 RUN apt-get update && apt-get install -y \
 	vim \
