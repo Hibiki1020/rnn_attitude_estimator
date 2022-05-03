@@ -331,7 +331,8 @@ if __name__ == '__main__':
         index_dict_path = index_csv_path,
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
-        deg_threshold = deg_threshold
+        deg_threshold = deg_threshold,
+        num_workers=2
     )
 
     print("Load Valid Dataeset")
@@ -347,7 +348,8 @@ if __name__ == '__main__':
         index_dict_path = index_csv_path,
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
-        deg_threshold = deg_threshold
+        deg_threshold = deg_threshold,
+        num_workers=2
     )
 
     print("Load Network")

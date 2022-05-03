@@ -23,7 +23,7 @@ hyperparameter:
   std_element: 0.5
   dim_fc_out: 63 #default 61 dims + 2 dims
   deg_threshold: 30
-  batch_size: 64
+  batch_size: 256
   num_epochs: 50
   optimizer_name: "Adam"
   lr_resnet: 1e-4
