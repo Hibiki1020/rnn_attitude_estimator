@@ -332,7 +332,7 @@ if __name__ == '__main__':
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
         deg_threshold = deg_threshold,
-        num_workers=2
+        num_workers = 2
     )
 
     print("Load Valid Dataeset")
@@ -349,7 +349,7 @@ if __name__ == '__main__':
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
         deg_threshold = deg_threshold,
-        num_workers=2
+        num_workers = 2
     )
 
     print("Load Network")
