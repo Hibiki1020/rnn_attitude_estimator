@@ -60,6 +60,6 @@ RUN mkdir /home/pycode && \
 #RUN chmod +x /usr/local/bin/entrypoint.sh
 #ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-RUN mkdir -p /home/log/rnn_test && cd /home/pycode/rnn_attitude_estimator && ./download_weight.sh
+RUN mkdir -p /home/log/rnn_test && mkdir -p /home/log/rnn_test/log && cd /home/pycode/rnn_attitude_estimator && ./download_weight.sh
 
 WORKDIR /home/pycode/rnn_attitude_estimator
