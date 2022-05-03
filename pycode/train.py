@@ -117,7 +117,7 @@ class Trainer:
             train_dataset,
             batch_size = batch_size,
             shuffle=True,
-            #num_workers = 2,
+            num_workers = 2,
             #pin_memory =True
         )
 
@@ -125,7 +125,7 @@ class Trainer:
             valid_dataset,
             batch_size = batch_size,
             shuffle=True,
-            #num_workers = 2,
+            num_workers = 2,
             #pin_memory = True
         )
 
@@ -331,8 +331,7 @@ if __name__ == '__main__':
         index_dict_path = index_csv_path,
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
-        deg_threshold = deg_threshold,
-        num_workers = 2
+        deg_threshold = deg_threshold
     )
 
     print("Load Valid Dataeset")
@@ -348,8 +347,7 @@ if __name__ == '__main__':
         index_dict_path = index_csv_path,
         dim_fc_out = dim_fc_out,
         timesteps = timesteps,
-        deg_threshold = deg_threshold,
-        num_workers = 2
+        deg_threshold = deg_threshold
     )
 
     print("Load Network")
