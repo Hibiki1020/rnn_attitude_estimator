@@ -65,7 +65,9 @@ class InferenceMod:
         self.net = self.getNetwork(self.weights_path, self.dim_fc_out, self.dropout_rate, self.timesteps)
         print("Load Network")
 
-
+        if self.enable_dropout == True:
+            print("Enable Dropout")
+            self.do_mc_dropout = self.enable_mc_dropout()
 
         self.value_dict = []
 
@@ -106,6 +108,14 @@ class InferenceMod:
 
         net.load_state_dict(state_dict)
         return net
+
+    def enable_mc_dropout(self):
+        for module in self.net.modules():
+            if module.__class__.__name__.startswith('Dropout'):
+                module.train()
+                can_dropout = True
+
+        return True
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("./frame_infer.py")
