@@ -62,7 +62,7 @@ class RNNAttitudeEstimatorDataset(data.Dataset):
 
     def float_to_array(self, num_float):
         num_deg = float((num_float/3.141592)*180.0)
-
+#
         num_upper = 0.0
         num_lower = 0.0
 
