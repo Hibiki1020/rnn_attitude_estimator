@@ -2,3 +2,4 @@
 *.pth
 .vscode/
 __pycache__/
+trash_code/

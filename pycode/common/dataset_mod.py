@@ -7,6 +7,7 @@ import numpy as np
 import math
 import csv
 
+
 class RNNAttitudeEstimatorDataset(data.Dataset):
     def __init__(self, data_list, transform, phase, index_dict_path, dim_fc_out, timesteps, deg_threshold):
         self.data_list = data_list
@@ -81,26 +82,31 @@ class RNNAttitudeEstimatorDataset(data.Dataset):
         return len(self.data_list) - self.timesteps
 
     def __getitem__(self, index):
-        count = int(self.data_list[index][0])
-        img_path = self.data_list[index][1]
-        time = self.data_list[index][2]
 
-        x = float(self.data_list[index][3])
-        y = float(self.data_list[index][4])
-        z = float(self.data_list[index][5])
+        tmp_label_roll = []
+        tmp_label_pitch = []
 
-        tmp_roll = float(self.data_list[index][6])
-        tmp_pitch = float(self.data_list[index][7])
+        for i in range(self.timesteps):
+            img_path = self.data_list[index+i][1]
+            img_pil = Image.open(img_path)
+            img_pil = img_pil.convert("RGB")
 
-        roll_list = self.float_to_array(tmp_roll)
-        pitch_list = self.float_to_array(tmp_pitch)
+            tmp_roll = float(self.data_list[index+i][6])
+            tmp_pitch = float(self.data_list[index+i][7])
 
-        img_pil = Image.open(img_path)
-        img_pil = img_pil.convert("RGB")
+            roll_list = self.float_to_array(tmp_roll)
+            pitch_list = self.float_to_array(tmp_pitch)
 
-        roll_numpy = np.array(roll_list)
-        pitch_numpy = np.array(pitch_list)
+            roll_numpy = np.array(roll_list)
+            pitch_numpy = np.array(pitch_list)
 
-        img_trans, roll_trans, pitch_trans = self.transform(img_pil, roll_numpy, pitch_numpy)
+            img_trans, roll_trans, pitch_trans = self.transform(img_pil, roll_numpy, pitch_numpy)
 
-        return img_trans, roll_trans, pitch_trans
+            self.images[i] = img_trans
+            tmp_label_roll[i] = roll_trans
+            tmp_label_pitch[i] = pitch_trans
+            
+        self.label_roll = tmp_label_roll[len(tmp_label_roll)-1]
+        self.label_pitch = tmp_label_pitch[len(tmp_label_pitch)-1]
+
+        return self.images, self.label_roll, self.label_pitch
