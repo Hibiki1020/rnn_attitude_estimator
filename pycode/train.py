@@ -116,7 +116,7 @@ class Trainer:
         train_dataloader = torch.utils.data.DataLoader(
             train_dataset,
             batch_size = batch_size,
-            shuffle=True,
+            shuffle=False,
             num_workers = 2,
             #pin_memory =True
         )
@@ -124,7 +124,7 @@ class Trainer:
         valid_dataloader = torch.utils.data.DataLoader(
             valid_dataset,
             batch_size = batch_size,
-            shuffle=True,
+            shuffle=False,
             num_workers = 2,
             #pin_memory = True
         )
@@ -196,6 +196,9 @@ class Trainer:
 
                 for img_input, label_roll, label_pitch in tqdm(self.dataloaders_dict[phase]):
                     img_input = img_input.to(self.device)
+
+                    #print(img_input.size())
+
                     label_roll = label_roll.to(self.device)
                     label_pitch = label_pitch.to(self.device)
 

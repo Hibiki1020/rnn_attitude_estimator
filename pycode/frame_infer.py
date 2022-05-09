@@ -11,6 +11,8 @@ import datetime
 import numpy as np
 import random
 import csv
+import cv2
+import PIL.Image as PILIMAGE
 
 import argparse
 import subprocess
@@ -152,29 +154,83 @@ class InferenceMod:
         diff_total_roll = 0.0
         diff_total_pitch = 0.0
 
-        inference_input = []
-        inference_gt = []
-        count_array = []
+        for (img_path, gt_path) in zip(self.img_data_list, self.ground_truth_list):
+            print("---------Inference at " + str(infer_count + 1) + "---------")
+            infer_count += 1
+            start_time = time.time()
 
-        for i in range(0, len(self.img_data_list)-self.timesteps):
-            tmp_inference_input = self.img_data_list[i:i+self.timesteps]
-            tmp_inference_gt = self.ground_truth_list[i+self.timesteps]
-            tmp_count_array = [i, tmp_inference_gt[0]]
+            input_image = cv2.imread(img_path)
 
-            inference_input.append(tmp_inference_input)
-            inference_gt.append(tmp_inference_gt)
-            count_array.append(tmp_count_array)
+            result = []
+
+            roll_result_list = []
+            pitch_result_list = []
+
+            roll_hist_array = [0.0 for _ in range(self.dim_fc_out)]
+            pitch_hist_array = [0.0 for _ in range(self.dim_fc_out)]
+
+            roll_value_array = []
+            pitch_value_array = []
+
+            input_image = self.trasformImage(input_image)
+
+            roll_output_array, pitch_output_array = self.prediction(input_image)
+            
+            roll = self.array_to_value_simple(roll_output_array)
+            pitch = self.array_to_value_simple(pitch_output_array)
+
+            roll_hist_array += roll_output_array[0]
+            pitch_hist_array += pitch_output_array[0]
+
+            diff_roll = np.abs(roll - gt_path[2])
+            diff_pitch = np.abs(pitch - gt_path[3])
+
+            print("Infered Roll:  " + str(roll) +  "[deg]")
+            print("GT Roll:       " + str(gt_path[2]) + "[deg]")
+            print("Infered Pitch: " + str(pitch) + "[deg]")
+            print("GT Pitch:      " + str(gt_path[3]) + "[deg]")
+            print("Diff Roll: " + str(diff_roll) + " [deg]")
+            print("Diff Pitch: " + str(diff_pitch) + " [deg]")
 
 
-        #print(len(inference_gt))
-        #print(len(self.img_data_list))
-        #print(inference_gt[0][0])
-        #print(self.ground_truth_list[self.timesteps][0])
+    def trasformImage(self, input_image):
+        ## color
+        img_pil = self.cvToPIL(input_image)
+        img_tensor = self.img_transform(img_pil)
+        inputs = img_tensor.unsqueeze_(0)
+        inputs = inputs.to(self.device)
+        #print(inputs)
+        return inputs
 
+    def cvToPIL(self, img_cv):
+        #img_cv = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
+        img_pil = PILIMAGE.fromarray(img_cv)
+        return img_pil
+
+    def prediction(self, input_image):
+        logged_roll, logged_pitch, roll, pitch = self.net(input_image)
+
+        output_roll_array = roll.to('cpu').detach().numpy().copy()
+        output_pitch_array = pitch.to('cpu').detach().numpy().copy()
+
+        return np.array(output_roll_array), np.array(output_pitch_array)
+
+    def array_to_value_simple(self, output_array):
+        max_index = int(np.argmax(output_array))
+        plus_index = max_index + 1
+        minus_index = max_index - 1
+
+        value = 0.0
         
+        for value, label in zip(output_array[0], self.value_dict):
+            value += value * label
 
-        
+        if max_index == 0:
+            value = -31.0
+        elif max_index == 62: #361
+            value = 31.0
 
+        return value
 
 
 if __name__ == "__main__":

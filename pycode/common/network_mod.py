@@ -20,7 +20,7 @@ class Network(nn.Module):
         self.rnn_layer_num = timesteps
 
         self.feature_extractor = feature_extractor_mod.resnet50(pretrained_model, norm_layer=norm_layer, bn_eps=1e-5, bn_momentum=0.1, deep_stem=True, stem_width=64)
-        self.rnn = nn.RNN(input_size = self.rnn_input_dim, hidden_size = self.rnn_hidden_dim, num_layers = self.rnn_layer_num, dropout = self.dropout_rate, batch_first = True)
+        self.rnn = nn.RNN(input_size = self.rnn_input_dim, hidden_size = self.rnn_hidden_dim, num_layers = self.rnn_layer_num, dropout = self.dropout_rate, batch_first = True, bidirectional = False)
 
         self.roll_fc = nn.Sequential(
             nn.Linear( self.rnn_hidden_dim, self.dim_fc_out),
