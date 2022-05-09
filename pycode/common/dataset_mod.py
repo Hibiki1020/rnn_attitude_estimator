@@ -6,10 +6,11 @@ from PIL import Image
 import numpy as np
 import math
 import csv
+import torch
 
 
 class RNNAttitudeEstimatorDataset(data.Dataset):
-    def __init__(self, data_list, transform, phase, index_dict_path, dim_fc_out, timesteps, deg_threshold):
+    def __init__(self, data_list, transform, phase, index_dict_path, dim_fc_out, timesteps, deg_threshold, resize):
         self.data_list = data_list
         self.transform = transform
         self.phase = phase
@@ -32,6 +33,17 @@ class RNNAttitudeEstimatorDataset(data.Dataset):
         self.index_dict.append([int(self.deg_threshold)+1, int(dim_fc_out)-1])
 
         self.dict_len = len(self.index_dict)
+
+        channels = 3
+        img_size = resize
+        image = torch.Tensor()
+        self.images = image.new_zeros((self.timesteps, channels, img_size, img_size))
+
+        label_roll = torch.Tensor()
+        label_pitch = torch.Tensor()
+
+        self.label_roll = label_roll.new_zeros((self.dim_fc_out))
+        self.label_pitch = label_pitch.new_zeros((self.dim_fc_out))
 
     def search_index(self, number):
         index = int(1000000000)
