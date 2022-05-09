@@ -219,7 +219,6 @@ class InferenceMod:
         max_index = int(np.argmax(output_array))
         plus_index = max_index + 1
         minus_index = max_index - 1
-
         value = 0.0
         
         for value, label in zip(output_array[0], self.value_dict):
