@@ -115,8 +115,8 @@ class RNNAttitudeEstimatorDataset(data.Dataset):
             img_trans, roll_trans, pitch_trans = self.transform(img_pil, roll_numpy, pitch_numpy)
 
             self.images[i] = img_trans
-            tmp_label_roll[i] = roll_trans
-            tmp_label_pitch[i] = pitch_trans
+            tmp_label_roll.append(roll_trans)
+            tmp_label_pitch.append(pitch_trans)
             
         self.label_roll = tmp_label_roll[len(tmp_label_roll)-1]
         self.label_pitch = tmp_label_pitch[len(tmp_label_pitch)-1]
