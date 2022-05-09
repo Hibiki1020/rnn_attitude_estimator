@@ -1,10 +1,10 @@
-infer_dataset_top_directory: "/home/ssd_dir/rgbd_airsim_image/mono_depth_images_2/inference_image/Building99/inference1000"
+infer_dataset_top_directory: "/home/ssd_dir/flight_airsim_image/new_sequence1"
 csv_name: "data_list.csv"
 
 weights_top_directory: "/home/ssd_dir/rnn_attitude_estimator_log/rnn_train_2022_05_04"
 weights_file_name: "weights.pth"
 
-infer_log_top_directory: "/home/ssd_dir/mono_and_depth_image_attitude_estimator_log/resnet152/infer_log"
+infer_log_top_directory: "/home/ssd_dir/rnn_attitude_estimator_log/rnn_train_2022_05_03/infer_log"
 infer_log_file_name: "frame_infer_relust_building99.csv"
 
 index_dict_name: "index_dict_-30_30_range_step1deg.csv"

@@ -77,6 +77,8 @@ class InferenceMod:
                 num = float(row[0])
                 self.value_dict.append(num)
 
+        self.img_data_list , self.ground_truth_list = self.getData()
+
     def getImageTransform(self, resize, mean_element, std_element):
 
         size = (resize, resize)
@@ -117,6 +119,64 @@ class InferenceMod:
 
         return True
 
+    def getData(self):
+        img_data_list = []
+        gt_list = []
+
+        csv_path = os.path.join(self.infer_dataset_top_directory, self.csv_name)
+
+        with open(csv_path) as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                img_path = self.infer_dataset_top_directory + "/camera_image/" + row[1]
+                
+                count = int(row[0])
+                time = float(row[2])
+
+                gt_roll = float(row[6])
+                gt_pitch = float(row[7])
+
+                img_data_list.append(img_path)
+
+                tmp_list = [count, time, gt_roll, gt_pitch]
+                gt_list.append(tmp_list)
+
+        return img_data_list, gt_list
+
+    def frame_infer(self):
+        print("Start Inference")
+        
+        result_csv = []
+        infer_count = 0
+
+        diff_total_roll = 0.0
+        diff_total_pitch = 0.0
+
+        inference_input = []
+        inference_gt = []
+        count_array = []
+
+        for i in range(0, len(self.img_data_list)-self.timesteps):
+            tmp_inference_input = self.img_data_list[i:i+self.timesteps]
+            tmp_inference_gt = self.ground_truth_list[i+self.timesteps]
+            tmp_count_array = [i, tmp_inference_gt[0]]
+
+            inference_input.append(tmp_inference_input)
+            inference_gt.append(tmp_inference_gt)
+            count_array.append(tmp_count_array)
+
+
+        #print(len(inference_gt))
+        #print(len(self.img_data_list))
+        #print(inference_gt[0][0])
+        #print(self.ground_truth_list[self.timesteps][0])
+
+        
+
+        
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("./frame_infer.py")
     parser.add_argument(
@@ -139,3 +199,4 @@ if __name__ == "__main__":
         quit()
 
     estimator = InferenceMod(CFG)
+    result_csv = estimator.frame_infer()
